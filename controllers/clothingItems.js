@@ -50,14 +50,14 @@ module.exports.deleteItem = (req, res) => {
     });
 };
 
-module.exports.likeItem = (req, res) =>
+module.exports.likeItem = (req) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   );
 
-module.exports.dislikeItem = (req, res) =>
+module.exports.dislikeItem = (req) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
