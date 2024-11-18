@@ -46,20 +46,60 @@ module.exports.deleteItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: INVALID_ITEM_ID });
       }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+      }
       return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
     });
 };
 
-module.exports.likeItem = (req) =>
+module.exports.likeItem = (req, res) => {
+  const { itemId } = req.params;
   ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
+    itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
-  );
+  )
+    .orFail()
+    .then((item) => {
+      if (!item) {
+        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+      }
+      return res.status(200).send(item);
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: INVALID_ITEM_ID });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+      }
+    });
+};
 
-module.exports.dislikeItem = (req) =>
+module.exports.dislikeItem = (req, res) => {
+  const { itemId } = req.params;
+
   ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
+    itemId,
     { $pull: { likes: req.user._id } },
     { new: true }
-  );
+  )
+    .orFail()
+    .then((item) => {
+      if (!item) {
+        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+      }
+      return res.status(200).send(item);
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: INVALID_ITEM_ID });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+      }
+    });
+};
