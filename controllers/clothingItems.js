@@ -75,6 +75,7 @@ module.exports.likeItem = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
       }
+      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
     });
 };
 
@@ -101,5 +102,6 @@ module.exports.dislikeItem = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
       }
+      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
     });
 };
