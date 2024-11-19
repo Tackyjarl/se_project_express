@@ -35,10 +35,7 @@ module.exports.deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndRemove(itemId)
     .orFail()
-    .then((item) => {
-      if (!item) {
-        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
-      }
+    .then(() => {
       return res.status(200).send({ message: "Item deletion successful" });
     })
     .catch((err) => {
@@ -62,9 +59,6 @@ module.exports.likeItem = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      if (!item) {
-        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
-      }
       return res.status(200).send(item);
     })
     .catch((err) => {
@@ -89,9 +83,6 @@ module.exports.dislikeItem = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      if (!item) {
-        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
-      }
       return res.status(200).send(item);
     })
     .catch((err) => {
