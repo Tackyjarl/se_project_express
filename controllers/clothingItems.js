@@ -36,7 +36,7 @@ module.exports.deleteItem = (req, res) => {
   ClothingItem.findByIdAndRemove(itemId)
     .orFail()
     .then(() => {
-      return res.status(200).send({ message: "Item deletion successful" });
+      res.status(200).send({ message: "Item deletion successful" });
     })
     .catch((err) => {
       console.log(err);
@@ -59,7 +59,7 @@ module.exports.likeItem = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      return res.status(200).send(item);
+      res.status(200).send(item);
     })
     .catch((err) => {
       console.log(err);
@@ -83,7 +83,7 @@ module.exports.dislikeItem = (req, res) => {
   )
     .orFail()
     .then((item) => {
-      return res.status(200).send(item);
+      res.status(200).send(item);
     })
     .catch((err) => {
       console.log(err);
