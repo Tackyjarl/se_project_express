@@ -3,7 +3,7 @@ const UNAUTHORIZED = 401;
 const FORBIDDEN = 403;
 const NOT_FOUND = 404;
 const INTERNAL_SERVER_ERROR = 500;
-const DUPLICATE_ERROR = 11000;
+const DUPLICATE_ERROR = 409;
 
 const OWNER_REQUIRED = "Owner is required";
 const SERVER_ERROR = "An error has occured on the server";

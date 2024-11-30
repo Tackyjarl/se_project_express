@@ -19,9 +19,8 @@ module.exports.getItems = (req, res) => {
 };
 
 module.exports.createItem = (req, res) => {
-  const owner = req.user._id;
   const { name, weather, imageUrl } = req.body;
-  ClothingItem.create({ name, weather, imageUrl, owner })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.log(err);

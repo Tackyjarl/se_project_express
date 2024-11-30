@@ -25,7 +25,7 @@ const { JWT_SECRET } = require("../utils/config");
 // };
 
 module.exports.getCurrentUser = (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send(user))
@@ -43,7 +43,6 @@ module.exports.getCurrentUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
-  User.create({ name, avatar, email, password });
   if (!email || !password) {
     return res
       .status(BAD_REQUEST)
