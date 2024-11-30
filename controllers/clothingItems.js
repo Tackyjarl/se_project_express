@@ -6,6 +6,7 @@ const {
   NOT_FOUND,
   ITEM_NOT_FOUND,
   INVALID_ITEM_ID,
+  FORBIDDEN,
 } = require("../utils/errors");
 
 module.exports.getItems = (req, res) => {
@@ -35,8 +36,13 @@ module.exports.deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndRemove(itemId)
     .orFail()
-    .then(() => {
-      res.status(200).send({ message: "Item deletion successful" });
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "You do not have permission to delete this item" });
+      }
+      return res.status(200).send({ message: "Item deletion successful" });
     })
     .catch((err) => {
       console.log(err);
