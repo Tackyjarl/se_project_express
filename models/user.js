@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const { INVALID_ENTRY_ERROR } = require("../utils/errors");
 
 const userSchema = new mongoose.Schema({
   name: {
