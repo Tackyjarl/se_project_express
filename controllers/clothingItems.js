@@ -33,7 +33,7 @@ module.exports.createItem = (req, res) => {
 
 module.exports.deleteItem = (req, res) => {
   const { itemId } = req.params;
-  ClothingItem.findByIdAndRemove(itemId)
+  ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
@@ -41,7 +41,11 @@ module.exports.deleteItem = (req, res) => {
           .status(FORBIDDEN)
           .send({ message: "You do not have permission to delete this item" });
       }
-      return res.status(200).send({ message: "Item deletion successful" });
+      return item
+        .deleteOne()
+        .then(() =>
+          res.status(200).send({ message: "Item deletion successful" })
+        );
     })
     .catch((err) => {
       console.log(err);
