@@ -12,7 +12,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: "https://www.tackyjarl.crabdance.com" }));
+app.use(cors());
 
 app.use(requestLogger);
 app.use("/", routes);
