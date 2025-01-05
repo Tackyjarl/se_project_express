@@ -3,10 +3,12 @@ const { NotFoundError } = require("../utils/errors/NotFoundError");
 const { BadRequestError } = require("../utils/errors/BadRequestError");
 const { ForbiddenError } = require("../utils/errors/ForbiddenError");
 
-module.exports.getItems = (req, res) => {
+module.exports.getItems = (req, res, next) => {
   ClothingItem.find({})
     .then((item) => res.send(item))
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports.createItem = (req, res) => {
