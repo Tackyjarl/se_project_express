@@ -1,21 +1,12 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  INTERNAL_SERVICE_ERROR,
-  SERVER_ERROR,
-  BAD_REQUEST,
-  NOT_FOUND,
-  ITEM_NOT_FOUND,
-  INVALID_ITEM_ID,
-  FORBIDDEN,
-} = require("../utils/errors");
+const { NotFoundError } = require("../utils/errors/NotFoundError");
+const { BadRequestError } = require("../utils/errors/BadRequestError");
+const { ForbiddenError } = require("../utils/errors/ForbiddenError");
 
 module.exports.getItems = (req, res) => {
   ClothingItem.find({})
     .then((item) => res.send(item))
-    .catch((err) => {
-      console.log(err);
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
-    });
+    .catch(next);
 };
 
 module.exports.createItem = (req, res) => {
@@ -25,9 +16,9 @@ module.exports.createItem = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: err.message });
+        return next(new BadRequestError(err.message));
       }
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
+      return next(err);
     });
 };
 
@@ -37,9 +28,9 @@ module.exports.deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        return res
-          .status(FORBIDDEN)
-          .send({ message: "You do not have permission to delete this item" });
+        return next(
+          new ForbiddenError("You do not have permission to delete this item")
+        );
       }
       return item
         .deleteOne()
@@ -50,12 +41,12 @@ module.exports.deleteItem = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: INVALID_ITEM_ID });
+        return next(new BadRequestError("Invalid item ID"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+        return next(new NotFoundError("Item not found"));
       }
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
+      return next(err);
     });
 };
 
@@ -73,12 +64,12 @@ module.exports.likeItem = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: INVALID_ITEM_ID });
+        return next(new BadRequestError("Invalid item ID"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+        return next(new NotFoundError("Item not found"));
       }
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
+      return next(err);
     });
 };
 
@@ -97,11 +88,11 @@ module.exports.dislikeItem = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: INVALID_ITEM_ID });
+        return next(new BadRequestError("Invalid item ID"));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: ITEM_NOT_FOUND });
+        return next(new NotFoundError("Item not found"));
       }
-      return res.status(INTERNAL_SERVICE_ERROR).send({ message: SERVER_ERROR });
+      return next(err);
     });
 };
