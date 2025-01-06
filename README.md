@@ -11,3 +11,7 @@ This project is designed to develop a backend api for the WTWR project and to le
 ### Testing
 
 Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+
+#### Domains
+
+https://tackyjarl.crabdance.com
