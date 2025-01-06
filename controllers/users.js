@@ -15,7 +15,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("User not found"));
       }
@@ -26,7 +26,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
   if (!email || !password) {
     return next(new BadRequestError("Email and password are required"));
@@ -40,7 +40,7 @@ module.exports.createUser = (req, res) => {
         .send({ name: user.name, avatar: user.avatar, email: user.email })
     )
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.code === 11000) {
         return next(
           new DuplicateError(
@@ -55,7 +55,7 @@ module.exports.createUser = (req, res) => {
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return next(new BadRequestError("Email and password are required"));
@@ -68,7 +68,7 @@ module.exports.login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.message === "Invalid email or password") {
         return next(new UnauthorizedError("Invalid email or password"));
       }
@@ -76,7 +76,7 @@ module.exports.login = (req, res) => {
     });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -86,7 +86,7 @@ module.exports.updateUser = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.name === "ValidationError") {
         return next(new BadRequestError(err.message));
       }
